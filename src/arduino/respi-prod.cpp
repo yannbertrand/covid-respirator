@@ -10,7 +10,7 @@ int consigneNbCycle = 20;
 int futureConsigneNbCycle = consigneNbCycle;
 
 // degré d'ouverture de la valve blower (quantité d'air du blower qu'on envoie vers le Air Transistor patient)
-int consigneOuverture = 70;
+int consigneOuverture = 65;
 int futureConsigneOuverture = consigneOuverture;
 
 // consigne de pression de crête maximum
@@ -199,7 +199,7 @@ void setup() {
 //Call this in loop() to help find analog values of buttons
 void calibrateButtons() {
 	unsigned int value = analogRead(A0);
-	Serial.println(value);
+	//Serial.println(value);
 	delay(250);
 }
 
@@ -292,7 +292,7 @@ void loop() {
       }
       #else
       double currentPression = readPressureSensor();
-      Serial.println(currentPression);
+      //Serial.println(currentPression);
       #endif
 
       /********************************************/
@@ -364,6 +364,12 @@ void loop() {
       }
       #endif
 
+      if(consigneBlower < 20) {
+        consigneBlower = 20;
+      } else if (consigneBlower > 70){
+        consigneBlower = 70;
+      }
+
       /********************************************/
       // Envoi des nouvelles valeurs aux actionneurs
       /********************************************/
@@ -371,6 +377,8 @@ void loop() {
         blower.write(consigneBlower);
         positionBlower = consigneBlower;
       }
+
+      Serial.println(consigneBlower);
 
       if (consignePatient != positionPatient) {
         //patient.write(consignePatient);
