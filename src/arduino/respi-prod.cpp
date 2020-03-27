@@ -10,11 +10,11 @@ int consigneNbCycle = 20;
 int futureConsigneNbCycle = consigneNbCycle;
 
 // degré d'ouverture de la valve blower (quantité d'air du blower qu'on envoie vers le Air Transistor patient)
-int consigneOuverture = 45;
+int consigneOuverture = 70;
 int futureConsigneOuverture = consigneOuverture;
 
 // consigne de pression de crête maximum
-int consignePressionCrete = 60;
+int consignePressionCrete = 50;
 
 // consigne de pression plateau maximum
 int consignePressionPlateauMax = 30;
@@ -121,27 +121,13 @@ int readPressureSensor() {
   
   filteredVout = filteredVout + (rawVout - filteredVout) * 0.2;
   
-  #ifdef DEBUG
-  Serial.print("Raw min: ");
-  Serial.print(vMin);
-  Serial.print(" - Raw max: ");
-  Serial.print(vMax);
-  Serial.print(" - Raw moy: ");
-  Serial.print(vMoy);
-  #endif
-
   // Ratio a cause du pont diviseur
   double vOut = filteredVout / RATIO_PONT_DIVISEUR;
 
   // Pression en kPA
   double pressure  = (vOut / V_SUPPLY - 0.04) / 0.09;
 
-  #ifdef DEBUG
-  Serial.print(" - Pressure (kPA): ");
-  Serial.println(pressure);
-  #endif
-
-  return pressure * KPA_MMH2O * 1;
+  return pressure * KPA_MMH2O / 10.0;
 }
 
 // boutons
@@ -164,14 +150,14 @@ void setup() {
   Serial.begin(9600);
   Serial.println("demarrage");
   #endif
-  patient.attach(PIN_SERVO_PATIENT);
-  blower.attach(PIN_SERVO_BLOWER);
+  //patient.attach(PIN_SERVO_PATIENT);
+  blower.attach(PIN_SERVO_PATIENT);
 
   #ifdef DEBUG
   Serial.print("mise en secu initiale");
   #endif
   blower.write(SECURITE_COUPURE_BLOWER);
-  patient.write(SECURITE_OUVERTURE_EXPI);
+  //patient.write(SECURITE_OUVERTURE_EXPI);
 
   #ifdef LCD_20_CHARS_4_LINES
   lcd.begin(20, 4);
@@ -183,14 +169,14 @@ void setup() {
   lcd.begin(16, 2);
   #endif
 
-  analogButtons.add(btnPressionCretePlus);
-  analogButtons.add(btnPressionCretePlus);
-  analogButtons.add(btnPressionPlateauPlus);
-  analogButtons.add(btnPressionPlateauMinus);
-  analogButtons.add(btnPressionPepPlus);
-  analogButtons.add(btnPressionPepMinus);
-  analogButtons.add(btnCyclePlus);
-  analogButtons.add(btnCycleMinus);
+  // analogButtons.add(btnPressionCretePlus);
+  // analogButtons.add(btnPressionCretePlus);
+  // analogButtons.add(btnPressionPlateauPlus);
+  // analogButtons.add(btnPressionPlateauMinus);
+  // analogButtons.add(btnPressionPepPlus);
+  // analogButtons.add(btnPressionPepMinus);
+  // analogButtons.add(btnCyclePlus);
+  // analogButtons.add(btnCycleMinus);
 
   Wire.begin();
   
@@ -218,7 +204,6 @@ void calibrateButtons() {
 }
 
 void loop() {
-  calibrateButtons();
 
   int nbreCentiemeSecParCycle = 60 * 100 / consigneNbCycle;
   int nbreCentiemeSecParInspi = nbreCentiemeSecParCycle / 3; // inspiration = 1/3 du cycle, expiration = 2/3 du cycle
@@ -307,29 +292,33 @@ void loop() {
       }
       #else
       double currentPression = readPressureSensor();
+      Serial.println(currentPression);
       #endif
 
       /********************************************/
       // Calcul des consignes normales
       /********************************************/
+
       if (currentCentieme <= nbreCentiemeSecParInspi) { // on est dans la phase temporelle d'inspiration (poussée puis plateau)
         if (currentPression >= currentPressionCrete) {
+          // phase montante jusqu'à crète
           currentPhase = PHASE_PUSH_INSPI;
           currentPressionCrete = currentPression;
 
-          consigneBlower = 90 - ANGLE_MULTIPLICATEUR * consigneOuverture; // on ouvre le blower vers patient à la consigne paramétrée
-          consignePatient = 90 + ANGLE_MULTIPLICATEUR * ANGLE_OUVERTURE_MAXI; // on ouvre le flux IN patient
+          consigneBlower = ANGLE_MULTIPLICATEUR * consigneOuverture ;//90 - ANGLE_MULTIPLICATEUR * consigneOuverture; // on ouvre le blower vers patient à la consigne paramétrée
+          //consignePatient = 90 + ANGLE_MULTIPLICATEUR * ANGLE_OUVERTURE_MAXI; // on ouvre le flux IN patient
         } else {
+          // phase plateau
           currentPhase = PHASE_HOLD_INSPI;
           currentPressionPlateau = currentPression;
 
-          consigneBlower = 90 + ANGLE_MULTIPLICATEUR * ANGLE_OUVERTURE_MAXI; // on shunt vers l'extérieur
+          consigneBlower =  50; //90 + ANGLE_MULTIPLICATEUR * ANGLE_OUVERTURE_MAXI; // on shunt vers l'extérieur
           consignePatient = 90; // on bloque les flux patient
         }
       } else { // on gère l'expiration on est phase PHASE_EXPIRATION
         currentPhase = PHASE_EXPIRATION;
         currentPressionPep = currentPression;
-        consigneBlower = 90 + ANGLE_MULTIPLICATEUR * ANGLE_OUVERTURE_MAXI; // on shunt vers l'extérieur
+        consigneBlower = 20;//90 + ANGLE_MULTIPLICATEUR * ANGLE_OUVERTURE_MAXI; // on shunt vers l'extérieur
         consignePatient = SECURITE_OUVERTURE_EXPI; // on ouvre le flux OUT patient (expiration vers l'extérieur)
       }
 
@@ -352,7 +341,7 @@ void loop() {
           Serial.println("Mise en securite : pression plateau trop importante");
         }
         #endif
-        consignePatient = positionBlower + 1;
+        consigneBlower = positionBlower - 2;
       }
       // si pression PEP < PEP mini, alors fermeture complète valve expiration
       if (currentPression < consignePressionPEP) {
@@ -361,6 +350,7 @@ void loop() {
           Serial.println("Mise en securite : pression d'expiration positive (PEP) trop faible");
         }
         #endif
+        consigneBlower = positionBlower + 2;
         consignePatient = 90;
         currentPhase = PHASE_HOLD_EXPI;
       }
@@ -383,7 +373,7 @@ void loop() {
       }
 
       if (consignePatient != positionPatient) {
-        patient.write(consignePatient);
+        //patient.write(consignePatient);
         positionPatient = consignePatient;
       }
 

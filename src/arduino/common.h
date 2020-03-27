@@ -39,8 +39,8 @@ const double V_SUPPLY = 5.08;
 const double RATIO_PONT_DIVISEUR = 0.8192; // 0.572727273;
 
 // amplitude radiale des servomoteurs
-const int ANGLE_OUVERTURE_MINI = 8;
-const int ANGLE_OUVERTURE_MAXI = 45;
+const int ANGLE_OUVERTURE_MINI = 10; //8;
+const int ANGLE_OUVERTURE_MAXI = 75; //45;
 
 // multiplicateur à modifier pour inverser les angles (en cas de suppression de l'engrenage)
 const int ANGLE_MULTIPLICATEUR = 1;
@@ -72,7 +72,7 @@ const int BORNE_INF_CYCLE = 5;  // demande medical
 const int MAINTIEN_PARAMETRAGE = 21;
 
 // valeurs de sécurité pour les actionneurs
-const int SECURITE_COUPURE_BLOWER = 90 - ANGLE_OUVERTURE_MAXI;
+const int SECURITE_COUPURE_BLOWER = 70; //90 - ANGLE_OUVERTURE_MAXI;
 const int SECURITE_OUVERTURE_EXPI = 90 - ANGLE_OUVERTURE_MAXI;
 
 // servomoteur blower : connecte le flux d'air vers le Air Transistor patient ou vers l'extérieur
@@ -85,7 +85,7 @@ Servo blower;
 // 90° → tout est fermé
 // entre 45° (90 - ANGLE_OUVERTURE_MAXI) et 82° (90 - ANGLE_OUVERTURE_MINI) → envoi du flux vers le patient
 // entre 98° (90 + ANGLE_OUVERTURE_MINI) et 135° (90 + ANGLE_OUVERTURE_MAXI) → échappe l'air du patient vers l'extérieur
-Servo patient;
+//Servo patient;
 
 
 // // contrôle de l'écran LCD
