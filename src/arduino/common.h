@@ -1,5 +1,42 @@
-//#define DEBUG // décommenter pour envoyer les messages de debug en série
-//#define SIMULATION // décommenter pour simuler des valeurs de capteur de pression au lieu de lire les vraies
+// Décommenter pour activer les message de debug sur le serie
+// #define DEBUG
+
+// Décommenter pour simuler des valeurs de capteur de pression au lieu de lire les vraies
+// #define SIMULATION 
+
+// Définition des PIN pour les entrées / sorties
+#define PIN_ALARM D13
+#define PIN_LED_RED PC4
+#define PIN_LED_GREEN PB13
+#define PIN_MOTEUR_VENTILATEUR D5
+#define PIN_SERVO_BLOWER D2
+#define PIN_SERVO_PATIENT D4
+#define PIN_CONTROL_BUTTONS A0
+#define PIN_RUN_BUTTONS A4
+#define PIN_BATTERY A2
+#define PIN_PRESSURE_SENSOR A1
+
+// PIN pour LCD
+#define RS D7
+#define EN D8
+#define DB4 D9
+#define DB5 D10
+#define DB6 D11
+#define DB7 D12 
+
+// contrôle de l'écran LCD
+#define LCD_20_CHARS_4_LINES // commenter pour soit utiliser un LCD 20x2 ou un 16x2
+// #define LCD_20_CHARS_2_LINES // commenter pour utiliser un écran LCD 16 caratères
+// #define LCD_16_CHARS_2_LINES
+
+// Période en ms de la boucle de traitement
+const uint32_t PERIODE_DE_TRAITEMENT = 10ul;
+
+// Pressure sensor constants
+const double KPA_TO_MMHG = 7.5006156130264;
+const double KPA_MMH2O = 101.97162129779;
+const double V_SUPPLY = 5.08;
+const double RATIO_PONT_DIVISEUR = 0.8192; // 0.572727273;
 
 // amplitude radiale des servomoteurs
 const int ANGLE_OUVERTURE_MINI = 8;
@@ -12,16 +49,6 @@ const int ANGLE_MULTIPLICATEUR = 1;
 const int CAPT_PRESSION_MINI = 0; // a adapter lors de la calibration
 const int CAPT_PRESSION_MAXI = 800; // on ne va pas jusqu'à 1024 à cause de la saturation de l'AOP -> à adapter avec meilleur AOP
 
-// entrées-sorties
-const int PIN_CAPTEUR_PRESSION = A4;
-const int PIN_SERVO_BLOWER = 4; // D4
-const int PIN_SERVO_PATIENT = 2; // D2
-const int BTN_NOMBRE_CYCLE_MINUS = A3;
-const int BTN_NOMBRE_CYCLE_PLUS = A2;
-
-// contrôle de l'écran LCD
-const int rs = 7, en = 8, d4 = 9, d5 = 10, d6 = 11, d7 = 12;
-#define LCD_20_CHARS // commenter pour utiliser un écran LCD 16 caratères
 const int LCD_UPDATE_PERIOD = 20; // période (en centièmes de secondes) de mise à jour du feedback des consignes sur le LCD
 
 // phases possibles du cycle
@@ -45,8 +72,8 @@ const int BORNE_INF_CYCLE = 5;  // demande medical
 const int MAINTIEN_PARAMETRAGE = 21;
 
 // valeurs de sécurité pour les actionneurs
-const int secu_coupureBlower = 90 - ANGLE_OUVERTURE_MAXI;
-const int secu_ouvertureExpi = 90 - ANGLE_OUVERTURE_MAXI;
+const int SECURITE_COUPURE_BLOWER = 90 - ANGLE_OUVERTURE_MAXI;
+const int SECURITE_OUVERTURE_EXPI = 90 - ANGLE_OUVERTURE_MAXI;
 
 // servomoteur blower : connecte le flux d'air vers le Air Transistor patient ou vers l'extérieur
 // 90° → tout est fermé
@@ -61,12 +88,14 @@ Servo blower;
 Servo patient;
 
 
-// contrôle de l'écran LCD
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+// // contrôle de l'écran LCD
+LiquidCrystal lcd(RS, EN, DB4, DB5, DB6, DB7);
 
-AnalogButtons buttons = AnalogButtons(A0);
+// AnalogButtons buttons = AnalogButtons(A0);
 
-#define ANALOG_PIN A0
+
+
+
 const int BTN_FREE2                       = 913;
 const int BTN_FREE1                       = 821;
 const int BTN_ALARM_OFF                   = 745;
@@ -79,15 +108,15 @@ const int BTN_PRESSION_PLATEAU_MINUS      = 109;
 const int BTN_PRESSION_PLATEAU_PLUS       =   0;
 
 // TODO revoir les tensions ici
-const uint16_t TENSION_BTN_PRESSION_PLATEAU_PLUS   = BTN_PRESSION_PLATEAU_PLUS;
-const uint16_t TENSION_BTN_PRESSION_PLATEAU_MINUS  = BTN_PRESSION_PLATEAU_MINUS;
-const uint16_t TENSION_BTN_PEP_PLUS                = BTN_PRESSION_PEP_PLUS;
-const uint16_t TENSION_BTN_PEP_MINUS               = BTN_PRESSION_PEP_MINUS;
-const uint16_t TENSION_BTN_RB_PLUS                 = BTN_CYCLE_PLUS;
-const uint16_t TENSION_BTN_RB_MINUS                = BTN_CYCLE_MINUS;
-const uint16_t TENSION_BTN_ALARME_ON               = BTN_ALARM_ON;
-const uint16_t TENSION_BTN_ALARME_OFF              = BTN_ALARM_OFF;
-const uint16_t TENSION_BTN_VALVE_BLOWER_PLUS       = BTN_FREE1;
-const uint16_t TENSION_BTN_VALVE_BLOWER_MINUS      = BTN_FREE2;
-const uint16_t TENSION_BTN_VALVE_PATIENT_PLUS      = 971;
-const uint16_t TENSION_BTN_VALVE_PATIENT_MINUS     = 1012;
+const uint16_t TENSION_BTN_PRESSION_P_CRETE_PLUS   = 915;
+const uint16_t TENSION_BTN_PRESSION_P_CRETE_MINUS  = 728;
+const uint16_t TENSION_BTN_PRESSION_PLATEAU_PLUS   = 505;
+const uint16_t TENSION_BTN_PRESSION_PLATEAU_MINUS  = 410;
+const uint16_t TENSION_BTN_PEP_PLUS                = 0;
+const uint16_t TENSION_BTN_PEP_MINUS               = 598;
+const uint16_t TENSION_BTN_CYCLE_PLUS              = 291;
+const uint16_t TENSION_BTN_CYCLE_MINUS             = 215;
+
+const uint16_t TENSION_BTN_ALARME_ON        = BTN_ALARM_ON;
+const uint16_t TENSION_BTN_ALARME_OFF       = BTN_ALARM_OFF;
+const uint16_t TENSION_BTN_ALARME_SILENCE   = BTN_FREE1;
