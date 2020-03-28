@@ -67,7 +67,7 @@
 #define DBG_PRESSION_CRETE(centieme, periode)                                                      \
     if (centieme % periode)                                                                        \
     {                                                                                              \
-        Serial.println("Mise en securite : pression crete trop importante");                       \
+        //Serial.println("Mise en securite : pression crete trop importante");                       \
     }
 #else
 #define DBG_PRESSION_CRETE(centieme, periode)
@@ -80,7 +80,7 @@
 #define DBG_PRESSION_PLATEAU(centieme, periode)                                                    \
     if (centieme % periode)                                                                        \
     {                                                                                              \
-        Serial.println("Mise en securite : pression plateau trop importante");                     \
+        //Serial.println("Mise en securite : pression plateau trop importante");                     \
     }
 #else
 #define DBG_PRESSION_PLATEAU(centieme, periode)
@@ -93,7 +93,7 @@
 #define DBG_PRESSION_PEP(centieme, periode)                                                        \
     if (centieme % periode)                                                                        \
     {                                                                                              \
-        Serial.println("Mise en securite : pression d'expiration positive (PEP) trop faible");     \
+        //Serial.println("Mise en securite : pression d'expiration positive (PEP) trop faible");     \
     }
 #else
 #define DBG_PRESSION_PEP(centieme, periode)
@@ -107,8 +107,8 @@
     if (centieme % periode == 0)                                                                   \
     {                                                                                              \
         Serial.print("Phase : ");                                                                  \
-        Serial.println(phase);                                                                     \
-        Serial.print("Pression : ");                                                               \
+        Serial.print(phase);                                                                     \
+        Serial.print(" - Pression : ");                                                               \
         Serial.println(pression);                                                                  \
     }
 #else
