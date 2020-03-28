@@ -116,6 +116,12 @@ void loop()
                 displayDuringCycle(pController.cyclesPerMinuteCommand(),
                                    pController.maxPlateauPressureCommand(),
                                    pController.minPeepCommand(), pController.pressure());
+
+#ifdef DEBUG
+                displayConsigneServo(pController.blower().command,
+                                     pController.y().command, 
+                                     pController.patient().command);
+#endif
             }
 
             // next tick

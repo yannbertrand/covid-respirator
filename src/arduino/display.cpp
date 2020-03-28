@@ -107,3 +107,16 @@ void displayDuringCycle(int cyclesPerMinute, int maxPlateauPressure, int peep, i
     }
     }
 }
+
+void displayConsigneServo(int blowerCommand, int yCommand, int patientCommand)
+{
+    screen.setCursor(0, 3);
+
+    screen.print("b:");
+    screen.print(blowerCommand);
+    screen.print(" y:");
+    screen.print(yCommand);
+    screen.print(" p:");
+    screen.print(patientCommand);
+
+}

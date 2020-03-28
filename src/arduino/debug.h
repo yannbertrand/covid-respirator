@@ -66,7 +66,7 @@
 #define DBG_PRESSION_CRETE(centiSec, period)                                                       \
     if (centiSec % period == 0)                                                                    \
     {                                                                                              \
-        Serial.println("Safety procedure: peak pressure too high");                                \
+    // Serial.println("Safety procedure: peak pressure too high");                                \
     }
 #else
 #define DBG_PRESSION_CRETE(centiSec, period)
@@ -77,7 +77,7 @@
 #define DBG_PRESSION_PLATEAU(centiSec, period)                                                     \
     if (centiSec % period == 0)                                                                    \
     {                                                                                              \
-        Serial.println("Safety procedure: plateau pressure too high");                             \
+    // Serial.println("Safety procedure: plateau pressure too high");                             \
     }
 #else
 #define DBG_PRESSION_PLATEAU(centiSec, period)
@@ -88,7 +88,7 @@
 #define DBG_PRESSION_PEP(centiSec, period)                                                         \
     if (centiSec % period == 0)                                                                    \
     {                                                                                              \
-        Serial.println("Safety procedure: PEEP too low");                                          \
+    // Serial.println("Safety procedure: PEEP too low");                                          \
     }
 #else
 #define DBG_PRESSION_PEP(centiSec, period)
@@ -101,9 +101,9 @@
     {                                                                                              \
         Serial.print("Phase : ");                                                                  \
         Serial.println(phase);                                                                     \
-        Serial.print("Pressure : ");                                                               \
-        Serial.println(pressure);                                                                  \
-    }
+        Serial.print(" - Pressure : ");                                                            \
+        Serial.println(pressure);
+}
 #else
 #define DBG_PHASE_PRESSION(centiSec, period, phase, pressure)
 #endif
