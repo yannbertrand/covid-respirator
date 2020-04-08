@@ -30,3 +30,10 @@
  * a basic and deterministic model
  */
 #define SIMULATION 0
+
+/**
+ * Defines which hardware preset to use
+ *
+ * This changes which hardware is used, to which pins it is connected, as well as various parameters
+ */
+#define HARDWARE_VERSION 1
