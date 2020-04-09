@@ -685,8 +685,8 @@ void loop() {
     }
     }
 
-    if (step == STEP_PRESSURE_EMPTY || step == STEP_PRESSURE_VAL1 || step == STEP_PRESSURE_VAL2
-        || step == STEP_PRESSURE_VAL3) {
+    if ((step == STEP_PRESSURE_EMPTY || step == STEP_PRESSURE_VAL1 || step == STEP_PRESSURE_VAL2
+        || step == STEP_PRESSURE_VAL3) && (remainingTicks % (CYCLE_TICKS / 2) == 0)) {
         char status_msg[SCREEN_LINE_LENGTH + 1];
         snprintf(status_msg, SCREEN_LINE_LENGTH + 1, "Pressure: %d", readPressureSensor(0));
         displayStatus(status_msg, 2);
