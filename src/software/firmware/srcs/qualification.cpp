@@ -494,9 +494,9 @@ void loop() {
     btn_start.tick();
     btn_stop.tick();
 
-    digitalWrite(PIN_LED_RED, LED_RED_INACTIVE);
-    digitalWrite(PIN_LED_YELLOW, LED_YELLOW_INACTIVE);
-    digitalWrite(PIN_LED_GREEN, LED_GREEN_INACTIVE);
+    LedRedInactive();
+    LedYellowInactive();
+    LedGreenInactive();
     digitalWrite(PIN_BUZZER, LOW);
 
     switch (step) {
@@ -557,17 +557,17 @@ void loop() {
     }
     case STEP_LED_RED: {
         UNGREEDY(is_drawn, display("Red LED is ON", "Press start"));
-        digitalWrite(PIN_LED_RED, LED_RED_ACTIVE);
+        LedRedActive();
         break;
     }
     case STEP_LED_YELLOW: {
         UNGREEDY(is_drawn, display("Yellow LED is ON", "Press stop"));
-        digitalWrite(PIN_LED_YELLOW, LED_YELLOW_ACTIVE);
+        LedYellowActive();
         break;
     }
     case STEP_LED_GREEN: {
         UNGREEDY(is_drawn, display("Green LED is ON", "Press start"));
-        digitalWrite(PIN_LED_GREEN, LED_GREEN_ACTIVE);
+        LedGreenActive();
         break;
     }
     case STEP_BUZZER: {
