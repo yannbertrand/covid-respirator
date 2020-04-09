@@ -67,7 +67,7 @@
 #define STEP_PRESSURE_VAL3 30
 #define STEP_DONE 31
 
-static uint8_t step = STEP_LED_RED;
+static uint8_t step = STEP_LCD;
 
 static uint8_t is_drawn = false;
 #define UNGREEDY(is_drawn, statement)                                                              \
