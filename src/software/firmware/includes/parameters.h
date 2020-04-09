@@ -116,6 +116,14 @@ static const int32_t PID_PATIENT_INTEGRAL_MIN = -500;
 #define PIN_LCD_D5 D10
 #define PIN_LCD_D6 D11
 #define PIN_LCD_D7 D12
+
+#define LED_RED_ACTIVE HIGH
+#define LED_RED_INACTIVE LOW
+#define LED_YELLOW_ACTIVE HIGH
+#define LED_YELLOW_INACTIVE LOW
+#define LED_GREEN_ACTIVE HIGH
+#define LED_GREEN_INACTIVE LOW
+
 #elif HARDWARE_VERSION == 2
 #define PIN_LCD_RS D7  // PA8
 #define PIN_LCD_RW PA14
@@ -124,6 +132,13 @@ static const int32_t PID_PATIENT_INTEGRAL_MIN = -500;
 #define PIN_LCD_D5 D10  // PB6
 #define PIN_LCD_D6 D11  // PA7
 #define PIN_LCD_D7 D12  // PA6
+
+#define LED_RED_ACTIVE LOW
+#define LED_RED_INACTIVE HIGH
+#define LED_YELLOW_ACTIVE LOW
+#define LED_YELLOW_INACTIVE HIGH
+#define LED_GREEN_ACTIVE LOW
+#define LED_GREEN_INACTIVE HIGH
 #endif
 
 /// Number of lines
