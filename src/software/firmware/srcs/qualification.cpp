@@ -571,7 +571,7 @@ void loop() {
         break;
     }
     case STEP_BUZZER: {
-        UNGREEDY(is_drawn, display("Buzzer is ON", "Press Buzzer OFF"));
+        UNGREEDY(is_drawn, display("Buzzer is ON", "Press Alarm OFF"));
         digitalWrite(PIN_BUZZER, HIGH);
         break;
     }
