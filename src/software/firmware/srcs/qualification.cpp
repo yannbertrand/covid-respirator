@@ -634,10 +634,10 @@ void loop() {
         break;
     }
     case STEP_SERIAL: {
-        UNGREEDY(is_drawn, display("Sending to serial", "Press stop"));
 #if HARDWARE_VERSION == 1
         step++;
 #elif HARDWARE_VERSION == 2
+        UNGREEDY(is_drawn, display("Sending to serial", "Press stop"));
         if (remainingTicks == 0) {
             Serial6.println("[Qualification mode] Testing serial output");
         }
