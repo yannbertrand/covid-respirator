@@ -15,7 +15,7 @@ jobs:
 
       - name: Copy index
         run: |
-          cp .github/docs-redirect.html local/docs/index.html
+          cp .github/docs-firmware-redirect.html local/docs/software/firmware/index.html
 
       - name: Generate documentation for firmware
         uses: mattnotmitt/doxygen-action@v1
